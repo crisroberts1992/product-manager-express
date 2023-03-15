@@ -1,6 +1,7 @@
+import { randomUUID } from "crypto";
 import fs from "fs";
 
-class ProductManager {
+export class ProductManager {
   constructor(path) {
     this.path = path;
     fs.existsSync(this.path)
@@ -8,7 +9,7 @@ class ProductManager {
       : (this.products = []);
   }
 
-  addProduct = (title, description, price, thumbnail, code, stock) => {
+    addProduct = (title, description, price, thumbnail, code, stock) => {
     console.log("Agregando productos!:");
     let encontrado = this.products.some((el) => el.code === code);
     if (!encontrado) {
@@ -19,10 +20,10 @@ class ProductManager {
         thumbnail: thumbnail,
         code: code,
         stock: stock,
-        id: this.products.length + 1,
+        id: randomUUID(),
       };
       this.products.push(producto);
-      fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t"));
+        fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t"));
       console.log("Producto Agregado!");
     } else {
       console.error("Error, producto repetido!");
@@ -66,7 +67,7 @@ class ProductManager {
     }
   };
 }
-const manager = new ProductManager("./desafio.json");
+//const manager = new ProductManager("./desafio.json");
 
 
 //Testing
@@ -84,4 +85,4 @@ manager.addProduct('Producto Prueba', 'Este es un producto prueba', 200, 'sin im
 
 manager.getProducts();*/
 
-export default manager;
+//export default manager;

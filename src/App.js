@@ -1,38 +1,26 @@
-import express from "express";
-import manager from "./ProductManager.js";
+import express, {Router} from "express";
+import {productsRouter} from "./Routes/productsRoutes.js";
+import {cartsRouter} from "./Routes/cartsRoutes.js"
 
+
+const PORT =8080;
 const app = express();
-app.use(express.urlencoded({ extended: true }));
-console.log(manager.getProducts());
-const productos = manager.products;
-app.get("/", (req, res) => {
-  res.json({ productos });
-});
+
+
+app.get('/',(req,res)=>{
+  res.send(`<h1>Servidor levantado</h1>`)
+})
+
+
+app.use('/api/products', productsRouter)
+app.use('/api/carts', cartsRouter)
 
 app.get("/products", (req, res) => {
-  let limit = parseInt(req.query.limit);
-  try {
-    if (limit === 0 || !limit) {
-      res.json({ productos });
-    } else {
-      const arrayOriginal = productos;
-      let arrayConLimite = arrayOriginal.slice(0, limit);
-      res.json(arrayConLimite);
-    }
-  } catch (error) {
-    console.log("Error", error);
-    res.send("Ocurrido un error");
-  }
-});
+  res.send(`<h1>Productos</h1>`)
+})
 
-app.get("/products/:pid", async (req, res) => {
-  let pid = parseInt(req.params.pid);
-  const arrayOriginal = productos;
-  const arrayPorId = await arrayOriginal.find((el) => el.id === pid);
+app.get("/carts", (req, res) => {
+  res.send(`<h1>Carritos</h1>`)
+})
 
-  res.json(arrayPorId || { Error: "Producto no encontrado" });
-});
-
-app.listen(8080, () => {
-  console.log("Listening on port 8080");
-});
+const httpServer = app.listen(PORT, ()=>{console.log(`servidor levantado en puerto ${PORT}`)})
