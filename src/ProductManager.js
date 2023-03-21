@@ -1,88 +1,114 @@
 import { randomUUID } from "crypto";
 import fs from "fs";
 
+export class Product {
+  constructor({title, description, price, thumbnail, code, stock,category}) {
+      this.title = title;
+      this.description = description;
+      this.price = price;
+      this.thumbnail = thumbnail;
+      this.code = code;
+      this.stock = stock;
+      this.category = category;
+      this.id = randomUUID();
+  }
+}
+
+
+
 export class ProductManager {
+
   constructor(path) {
-    this.path = path;
-    fs.existsSync(this.path)
-      ? (this.products = JSON.parse(fs.readFileSync(this.path, "utf-8")))
+      this.path =path;
+       fs.existsSync(this.path)
+      ? (this.products = JSON.parse( fs.readFileSync(this.path, "utf-8")))
       : (this.products = []);
   }
+     
 
-    addProduct = (title, description, price, thumbnail, code, stock) => {
-    console.log("Agregando productos!:");
-    let encontrado = this.products.some((el) => el.code === code);
-    if (!encontrado) {
-      let producto = {
-        title: title,
-        description: description,
-        price: price,
-        thumbnail: thumbnail,
-        code: code,
-        stock: stock,
-        id: randomUUID(),
-      };
-      this.products.push(producto);
-        fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t"));
-      console.log("Producto Agregado!");
-    } else {
-      console.error("Error, producto repetido!");
+  
+  async getProducts() {
+      
+      console.log("productos :", this.products)
+       return await this.products;
     }
-    console.log("Fin de funcion addProduct!");
-  };
 
-  getProducts = () => {
-    console.log("Productos: ", this.products);
-  };
 
-  getElementById = (id) => {
-    const producto = this.products.find((el) => el.id === id);
-    console.log("Producto por ID:", producto || "Not Found");
-  };
 
-  updateProduct = (id, campo, valorNuevo) => {
-    let index = this.products.findIndex((element) => element.id === id);
-    let campoValido = Object.keys(this.products[index]).some(
-      (el) => el === campo
-    );
-    if (campo === "id") {
-      throw new Error(
-        "Error actualizando producto : El id no puede ser modificado\n"
-      );
-    } else if (!campoValido) {
-      throw new Error("Error actualizando producto: Elija un campo valido\n");
-    } else {
-      this.products[index][campo] = valorNuevo;
-      fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t"));
-    }
-  };
-  deleteProduct = (id) => {
-    let encontrado = this.products.some((el) => el.id === id);
-    if (encontrado) {
-      this.products.splice(id - 1, 1);     
-      fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t"));
-      console.log("Producto eliminado exitosamente \n");
-    } else {
-      throw new Error("Producto no encontrado");
-    }
-  };
+  async addProduct(title, description, price, thumbnail, stock, code,category) {
+      try {
+          await this.getProducts()
+          const productFind = this.products.find((product) => product.title === title)
+          if (productFind) {
+              console.log('Ya existe un producto con ese titulo');
+          }
+          if (title !== undefined && description !== undefined && price !== undefined && thumbnail!== undefined && stock !== undefined && code !== undefined && category !== undefined) {
+              const product = new Product({
+                  title : title,
+                  description : description,
+                  price : price,
+                  thumbnail : thumbnail,
+                  stock : stock,
+                  code : code,
+                  category:category                    
+              })
+  
+              this.products.push(product)
+              const jsonProducts = JSON.stringify(this.products, null, 2)
+              await fs.writeFileSync(this.path, jsonProducts)
+              
+            }
+              } catch (error) {
+            throw new Error ("Los campos no pueden estar vacios")
+      }  
+  }
+
+
+  async getProductById(id) { 
+        const productFind = this.products.find((product) => product.id === id)
+        if (productFind ) {
+            return await productFind
+            
+        } else {
+          throw new Error("producto no encontrado - ID invalido")
+            
+        }
+    
+  }
+
+async updateProduct(id, prodModificado) {
+  
+      const product = this.products.find((prod) => prod.id === id);
+      const indice = this.products.findIndex(p => p.id === id)
+      
+      if (!product) {
+        throw new Error("El id no existe");
+      }
+      
+      const nuevoProducto = new Product({ ...product, ...prodModificado})
+      nuevoProducto.id=id
+      this.products[indice] = nuevoProducto
+      
+      const jsonProductsModif = JSON.stringify(this.products, null, 2)
+      
+      console.log("El producto se actualizo con exito", nuevoProducto);
+       await fs.writeFileSync(this.path, jsonProductsModif)
 }
-//const manager = new ProductManager("./desafio.json");
 
 
-//Testing
-/*manager.addProduct('Producto Prueba', 'Este es un producto prueba', 200, 'sin imagen', '111', 25)
-manager.addProduct('Producto Prueba', 'Este es un producto prueba', 200, 'sin imagen', '222', 25)
-manager.addProduct('Producto Prueba', 'Este es un producto prueba', 200, 'sin imagen', '333', 25)
-manager.addProduct('Producto Prueba', 'Este es un producto prueba', 200, 'sin imagen', '444', 25)
-manager.addProduct('Producto Prueba', 'Este es un producto prueba', 200, 'sin imagen', '555', 25)
-manager.addProduct('Producto Prueba', 'Este es un producto prueba', 200, 'sin imagen', '666', 25)
-manager.addProduct('Producto Prueba', 'Este es un producto prueba', 200, 'sin imagen', '777', 25)
-manager.addProduct('Producto Prueba', 'Este es un producto prueba', 200, 'sin imagen', '888', 25)
-manager.addProduct('Producto Prueba', 'Este es un producto prueba', 200, 'sin imagen', '999', 25)
-manager.addProduct('Producto Prueba', 'Este es un producto prueba', 200, 'sin imagen', '010', 25)
 
+  async deleteProduct(id) {
+      const productFindIndex = this.products.findIndex((product) => product.id === id)
 
-manager.getProducts();*/
+      if (productFindIndex === -1) {
+          throw new Error("Product Not found");
+      } else {
+          this.products.splice(productFindIndex, 1)
+          console.log('Product deleted');
 
-//export default manager;
+          const jsonProducts = JSON.stringify(this.products, null, 2)
+          await fs.writeFileSync(this.path, jsonProducts)
+      }
+
+  }
+}

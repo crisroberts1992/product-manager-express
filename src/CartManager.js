@@ -1,16 +1,19 @@
+import { randomUUID } from "crypto";
+import fs from "fs";
+
+
+
 export class CartManager {
     constructor(path) {
-        this.carts;
-        this.path = path;
-    }
-    async readCarts() {
-        const data = await fs.readFile(this.path, "utf-8");
-        this.carts = JSON.parse(data);
-    }
+        this.path =path;
+        fs.existsSync(this.path)
+       ? (this.carts = JSON.parse( fs.readFileSync(this.path, "utf-8")))
+       : (this.carts = []);
+   }
     
     async getCarts() {
-        await this.readCarts();
-        return this.carts;
+        
+        return await this.carts;
       }
 
 async createCart (product) {
@@ -18,19 +21,20 @@ async createCart (product) {
 
     const cart= [{
         "id":randomUUID(),
+        
         }]
     
         cart.push(product)
         this.carts.push(cart)
     const jsonCarts = JSON.stringify(this.carts, null, 2)
-    await fs.writeFile(this.path, jsonCarts)
+    await fs.writeFileSync(this.path, jsonCarts)
     
 }
 
 async saveCart(){
    
     const jsonCarts = JSON.stringify(this.carts, null, 2)
-    await fs.writeFile(this.path, jsonCarts)
+    await fs.writeFileSync(this.path, jsonCarts)
 }
 async getCartById(id){
    

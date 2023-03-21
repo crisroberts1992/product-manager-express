@@ -1,6 +1,7 @@
 import express, {Router} from 'express';
-import  {ProductManager} from '../ProductManager.js';
+import  { ProductManager} from '../ProductManager.js';
 import { CartManager} from '../CartManager.js';
+
 
 
 export const cartsRouter = Router()
@@ -8,12 +9,20 @@ cartsRouter.use(express.json())
 cartsRouter.use(express.urlencoded({ extended: true}))
 
 
-const productManager = new ProductManager('./desafio.json');
+const productManager = new ProductManager('./productos.json');
 const cartManager = new CartManager('./carrito.json')
+
+cartsRouter.get('/', async (req, res) => {
+    try {
+        res.json(await cartManager.getCarts());
+      } catch (error) {
+        res.json({ error })
+      }
+    })
 
 cartsRouter.get('/:cid', async (req, res) => {
     try {
-        const id = req.params.cid
+        const id = (req.params.cid)
         const carritoID = await cartManager.getCartById(id)
 
         res.json(carritoID)
@@ -22,22 +31,24 @@ cartsRouter.get('/:cid', async (req, res) => {
     }
 
 })
-
-
-cartsRouter.get('/', async (req, res) => {
-
-    res.send(await cartManager.getCarts())
-})
-
-
-
+cartsRouter.post('/', async (req, res) =>{
+    
+        try {                    
+        const addCart = await cartManager.createCart()
+             res.json(addCart)
+             res.send("Cart creado")
+            } catch (error) {
+             throw new Error('no es posible agregar al carrito')
+         }
+    }
+    )
 cartsRouter.post('/:cid/product/:pid', async (req, res) => {
     try {
-        const cid = req.params.cid
-        const pid = req.params.pid
+        const cid = (req.params.cid)
+        const pid = (req.params.pid)
 
-        const productos = await ProductManager.getProducts()
-        const carritos = await CartManager.getCarts()
+        const productos = await productManager.getProducts()
+        const carritos = await cartManager.getCarts()
 
         
         const productoFiltrado = await productos.filter(element => element.id === pid)

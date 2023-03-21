@@ -1,6 +1,8 @@
 import express,{ Router } from 'express'
-import {ProductManager} from '../ProductManager.js'
-import { randomUUID } from "crypto";
+import {Product , ProductManager} from '../ProductManager.js'
+import { randomUUID } from 'crypto'
+
+export const productManager = new ProductManager('./productos.json')
 
 export const productsRouter = Router()
 productsRouter.use(express.json())
@@ -10,7 +12,7 @@ productsRouter.use(express.urlencoded({ extended: true }))
 productsRouter.get('/', async (req, res) => {
   
   try {
-    const productosLeidos = await ProductManager.getProducts()
+    const productosLeidos = await productManager.getProducts()
     let limit = parseInt(req.query.limit)
     let productosPorPagina
 
@@ -27,20 +29,13 @@ productsRouter.get('/', async (req, res) => {
 
 
 productsRouter.get('/:pid', async (req, res) => {
-  
-  try {
-    const pid = (req.params.pid)
-    const productosLeidos = await ProductManager.getProducts()
+   
 
-    if(pid) {
-        let filtro = productosLeidos.find((prod) => prod.id === id)
-        if(filtro){
-            res.send(filtro)
-        }else{
-            throw new Error ("ID inexistente")
-        }
-    
-    }}catch (error){
+  try {
+    const pId = (req.params.pid)
+    const productosLeidos = await productManager.getProductById(+pId)
+    res.json(productosLeidos)
+    }catch (error){
         res.status(500).json(
             {message: error.message}
         )}
@@ -49,33 +44,33 @@ productsRouter.get('/:pid', async (req, res) => {
 
 productsRouter.post('/', async (req, res) => {
     try {
-        await ProductManager.getProducts()
-
-        const producto1 = new ProductManager({
+       // await productManager.getProducts()
+        const producto2 = new Product({
             ...req.body,
             id: randomUUID()
         })
-        console.log(producto1);
+        console.log(producto2);
         
-        const addProducto = await ProductManager.addProduct(producto1.title, producto1.description,producto1.price, producto1.thumbnail, producto1.stock, producto1.code,producto1.category)
+        const addProducto = await productManager.addProduct(producto2.title, producto2.description,producto2.price, producto2.thumbnail, producto2.stock, producto2.code,producto2.category)
         res.json(addProducto)
     } catch (error) {
-        throw new Error('no es posible agregar producto')
+        throw new Error('no es posible agregar el producto')
     }
 })
 
 productsRouter.put('/:pid',async( req,res)=>{
     try {
     
-        const getProds = await ProductManager.getProducts()
-        const id= req.params.pid
-        const prodActualizado = req.body
+        
+        const id= (req.params.pid)
+        const prodActualizado = (req.body)
     
-        await ProductManager.updateProduct(id,prodActualizado)
+        const updateProducto = await productManager.updateProduct(+id,prodActualizado)
     
         res.send('Producto actualizado correctamente')
-       
-    } catch (error) {
+        res.json(updateProducto)
+       console.log(updateProducto)
+    } catch (error) { 
         throw new Error ('Error: no se encontro el producto filtrado. ')
     }
     } )
@@ -83,10 +78,10 @@ productsRouter.put('/:pid',async( req,res)=>{
     productsRouter.delete('/:pid',async( req,res)=>{
         try {
         
-            const getProds = await ProductManager.getProducts()
-            const id= req.params.pid
+            const getProds = await productManager.getProducts()
+            const id= (req.params.pid)
                
-            await ProductManager.deleteProduct(id)
+            await productManager.deleteProduct(id)
         
             res.send('Producto eliminado correctamente')
            

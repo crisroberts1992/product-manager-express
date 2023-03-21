@@ -1,0 +1,103 @@
+[
+  {
+    "title": "Producto Prueba",
+    "description": "Este es un producto prueba",
+    "price": 200,
+    "thumbnail": "sin imagen",
+    "code": "111",
+    "stock": 25,
+    "id": 1
+  },
+  {
+    "title": "Producto Prueba",
+    "description": "Este es un producto prueba",
+    "price": 200,
+    "thumbnail": "sin imagen",
+    "code": "222",
+    "stock": 25,
+    "id": 2
+  },
+  {
+    "title": "Producto Prueba",
+    "description": "Este es un producto prueba",
+    "price": 200,
+    "thumbnail": "sin imagen",
+    "code": "333",
+    "stock": 25,
+    "id": 3
+  },
+  {
+    "title": "Producto Prueba",
+    "description": "Este es un producto prueba",
+    "price": 200,
+    "thumbnail": "sin imagen",
+    "code": "444",
+    "stock": 25,
+    "id": 4
+  },
+  {
+    "title": "Producto Prueba",
+    "description": "Este es un producto prueba",
+    "price": 200,
+    "thumbnail": "sin imagen",
+    "code": "555",
+    "stock": 25,
+    "id": 5
+  },
+  {
+    "title": "Producto Prueba",
+    "description": "Este es un producto prueba",
+    "price": 200,
+    "thumbnail": "sin imagen",
+    "code": "666",
+    "stock": 25,
+    "id": 6
+  },
+  {
+    "title": "Producto Prueba",
+    "description": "Este es un producto prueba",
+    "price": 2200,
+    "thumbnail": "sin imagen",
+    "code": "777",
+    "stock": 5,
+    "category": "otro",
+    "id": 7
+  },
+  {
+    "title": "Producto Prueba",
+    "description": "Este es un producto prueba",
+    "price": 200,
+    "thumbnail": "sin imagen",
+    "code": "888",
+    "stock": 25,
+    "id": 8
+  },
+  {
+    "title": "Producto Prueba",
+    "description": "Este es un producto prueba",
+    "price": 200,
+    "thumbnail": "sin imagen",
+    "code": "999",
+    "stock": 25,
+    "id": 9
+  },
+  {
+    "title": "Producto Prueba",
+    "description": "Este es un producto prueba",
+    "price": 200,
+    "thumbnail": "sin imagen",
+    "code": "010",
+    "stock": 25,
+    "id": 10
+  },
+  {
+    "title": "new add Product 3 ",
+    "description": "Este es un nuevo producto prueba",
+    "price": 300,
+    "thumbnail": "sin imagen",
+    "code": "11234567899",
+    "stock": 40,
+    "category": "nuevo",
+    "id": "a5f066e0-ea41-45fa-86c6-1f2288e82d77"
+  }
+]
